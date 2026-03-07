@@ -12,6 +12,7 @@ import Footer from './components/Footer';
 import DebugLines from './pages/DebugLines';
 import useMobileDetect from './hooks/useMobileDetect';
 import MobileApp from './mobile/MobileApp';
+import FloatingLogo from './components/FloatingLogo';
 
 const DesktopApp = () => {
   useEffect(() => {
@@ -65,11 +66,21 @@ function App() {
 
   // Render static unified mobile site if phone detected
   if (isMobile) {
-    return <MobileApp />;
+    return (
+      <>
+        <MobileApp />
+        <FloatingLogo />
+      </>
+    );
   }
 
   // Otherwise return full GSAP 3D desktop site
-  return <DesktopApp />;
+  return (
+    <>
+      <DesktopApp />
+      <FloatingLogo />
+    </>
+  );
 }
 
 export default App;
