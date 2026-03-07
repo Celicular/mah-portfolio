@@ -12,7 +12,7 @@
   "dependencies": {
     "@fontsource-variable/geist": "^5.2.8",
     "@react-three/drei": "^9.122.0",
-    "@react-three/fiber": "^9.5.0",
+    "@react-three/fiber": "^8.18.0",
     "@studio-freight/lenis": "^1.0.42",
     "@studio-freight/react-lenis": "^0.0.47",
     "@tailwindcss/vite": "^4.2.1",
