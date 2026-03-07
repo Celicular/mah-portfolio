@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #8b5cf6; /* Vibrant Violet */
+  --color-background: #050505; /* Slightly lighter black for contrast */
+  --color-surface: #0f1115;
+  --color-text: #ffffff;
+  --color-text-muted: #9ca3af;
+  
+  --font-sans: "Manrope", system-ui, sans-serif;
+  --font-mono: "Sora", monospace;
+}
+
+@layer base {
+  body {
+    @apply bg-background text-text font-sans antialiased overflow-x-hidden;
+  }
+  
+  /* Lenis smooth scrolling requires html, body to not have smooth behavior natively if lenis is handling it */
+  html.lenis {
+    height: auto;
+  }
+
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+
+  .lenis.lenis-scrolling iframe {
+    pointer-events: none;
+  }
+}
+
+::selection {
+  @apply bg-primary/30 text-primary;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-background;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-surface rounded-full border border-white/5;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-primary/50;
+}
+
+/* Utilities for futuristic glassmorphism */
+@layer utilities {
+  .glass {
+    @apply bg-white/5 backdrop-blur-md border border-white/10;
+  }
+  
+  .text-glow {
+    text-shadow: 0 0 20px rgba(139, 92, 246, 0.5); /* updated to vibrant violet glow */
+  }
+
+  .animate-glow {
+    animation: glow-pulse 4s infinite ease-in-out;
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 10px rgba(139, 92, 246, 0.3)) drop-shadow(0 0 20px rgba(139, 92, 246, 0.2));
+  }
+  50% {
+    filter: drop-shadow(0 0 25px rgba(139, 92, 246, 0.6)) drop-shadow(0 0 45px rgba(139, 92, 246, 0.3));
+  }
+}
