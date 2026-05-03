@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ExternalLink } from 'lucide-react';
 import { parseImageUrl } from '../utils/imageUtils';
+import api from '../utils/axios';
 
 const MobilePortfolio = () => {
   const [portfolio, setPortfolio] = useState([]);
@@ -8,13 +9,9 @@ const MobilePortfolio = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch('/api/portfolio')
-      .then((r) => {
-        if (!r.ok) throw new Error('Failed to load portfolio');
-        return r.json();
-      })
-      .then((data) => {
-        setPortfolio(data);
+    api.get('/api/portfolio')
+      .then((res) => {
+        setPortfolio(res.data);
         setLoading(false);
       })
       .catch((err) => {

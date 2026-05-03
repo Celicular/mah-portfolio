@@ -5,6 +5,7 @@ import { ExternalLink, Github } from 'lucide-react';
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
 import { parseImageUrl } from '../utils/imageUtils';
+import api from '../utils/axios';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -18,13 +19,9 @@ const Projects = () => {
 
   // Fetch projects from API
   useEffect(() => {
-    fetch('/api/projects')
-      .then((r) => {
-        if (!r.ok) throw new Error('Failed to load projects');
-        return r.json();
-      })
-      .then((data) => {
-        setProjects(data);
+    api.get('/api/projects')
+      .then((res) => {
+        setProjects(res.data);
         setLoading(false);
       })
       .catch((err) => {

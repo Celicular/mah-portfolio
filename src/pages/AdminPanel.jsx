@@ -3,6 +3,7 @@ import { LogOut, Plus, RefreshCw } from 'lucide-react';
 import LoginScreen from './admin/components/LoginScreen';
 import DataTable from './admin/components/DataTable';
 import ItemModal from './admin/components/ItemModal';
+import api from '../utils/axios';
 
 export default function AdminPanel() {
   const [password, setPassword] = useState(sessionStorage.getItem('admin_password') || null);
@@ -21,19 +22,18 @@ export default function AdminPanel() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`/api/${activeTab}/all`, {
+      const res = await api.get(`/api/${activeTab}/all`, {
         headers: { 'X-Admin-Password': password }
       });
-      if (res.status === 401) {
+      setItems(res.data);
+    } catch (err) {
+      if (err.response?.status === 401) {
         sessionStorage.removeItem('admin_password');
         setPassword(null);
-        throw new Error('Invalid password');
+        setError('Invalid password');
+      } else {
+        setError(err.message);
       }
-      if (!res.ok) throw new Error('Failed to fetch data');
-      const data = await res.json();
-      setItems(data);
-    } catch (err) {
-      setError(err.message);
     } finally {
       setLoading(false);
     }
@@ -56,13 +56,10 @@ export default function AdminPanel() {
   // API Actions
   const handleToggleVisibility = async (id) => {
     try {
-      const res = await fetch(`/api/${activeTab}/${id}/toggle`, {
-        method: 'PATCH',
+      await api.patch(`/api/${activeTab}/${id}/toggle`, null, {
         headers: { 'X-Admin-Password': password }
       });
-      if (res.ok) {
-        setItems(items.map(item => item.id === id ? { ...item, hidden: !item.hidden } : item));
-      }
+      setItems(items.map(item => item.id === id ? { ...item, hidden: !item.hidden } : item));
     } catch (err) {
       console.error(err);
       alert('Failed to toggle visibility');
@@ -71,13 +68,10 @@ export default function AdminPanel() {
 
   const handleToggleDev = async (id) => {
     try {
-      const res = await fetch(`/api/${activeTab}/${id}/dev`, {
-        method: 'PATCH',
+      await api.patch(`/api/${activeTab}/${id}/dev`, null, {
         headers: { 'X-Admin-Password': password }
       });
-      if (res.ok) {
-        setItems(items.map(item => item.id === id ? { ...item, under_development: !item.under_development } : item));
-      }
+      setItems(items.map(item => item.id === id ? { ...item, under_development: !item.under_development } : item));
     } catch (err) {
       console.error(err);
       alert('Failed to toggle under development status');
@@ -87,13 +81,10 @@ export default function AdminPanel() {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this item?')) return;
     try {
-      const res = await fetch(`/api/${activeTab}/${id}`, {
-        method: 'DELETE',
+      await api.delete(`/api/${activeTab}/${id}`, {
         headers: { 'X-Admin-Password': password }
       });
-      if (res.ok) {
-        setItems(items.filter(item => item.id !== id));
-      }
+      setItems(items.filter(item => item.id !== id));
     } catch (err) {
       console.error(err);
       alert('Failed to delete item');
@@ -102,13 +93,8 @@ export default function AdminPanel() {
 
   const handleReorder = async (ids) => {
     try {
-      await fetch(`/api/${activeTab}/reorder`, {
-        method: 'PATCH',
-        headers: { 
-          'X-Admin-Password': password,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ ids })
+      await api.patch(`/api/${activeTab}/reorder`, { ids }, {
+        headers: { 'X-Admin-Password': password }
       });
     } catch (err) {
       console.error(err);
@@ -119,20 +105,16 @@ export default function AdminPanel() {
 
   const handleSaveItem = async (formData) => {
     const isEditing = !!editingItem;
-    const url = isEditing ? `/api/${activeTab}/${editingItem.id}` : `/api/${activeTab}`;
-    const method = isEditing ? 'PUT' : 'POST';
+    const url = `/api/${activeTab}${isEditing ? `/${editingItem.id}` : ''}`;
+    const method = isEditing ? 'put' : 'post';
 
     try {
-      const res = await fetch(url, {
+      await api({
         method,
-        headers: {
-          'X-Admin-Password': password,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
+        url,
+        data: formData,
+        headers: { 'X-Admin-Password': password }
       });
-      
-      if (!res.ok) throw new Error('Failed to save item');
       
       setIsModalOpen(false);
       fetchData(); // Refresh list

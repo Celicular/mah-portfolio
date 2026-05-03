@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Github } from 'lucide-react';
 import { parseImageUrl } from '../utils/imageUtils';
+import api from '../utils/axios';
 
 const MobileProjects = () => {
   const [projects, setProjects] = useState([]);
@@ -8,13 +9,9 @@ const MobileProjects = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch('/api/projects')
-      .then((r) => {
-        if (!r.ok) throw new Error('Failed to load projects');
-        return r.json();
-      })
-      .then((data) => {
-        setProjects(data);
+    api.get('/api/projects')
+      .then((res) => {
+        setProjects(res.data);
         setLoading(false);
       })
       .catch((err) => {

@@ -4,6 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ExternalLink } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { parseImageUrl } from '../utils/imageUtils';
+import api from '../utils/axios';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -17,13 +18,9 @@ const Portfolio = () => {
 
   // Fetch portfolio data from API
   useEffect(() => {
-    fetch('/api/portfolio')
-      .then((r) => {
-        if (!r.ok) throw new Error('Failed to load portfolio');
-        return r.json();
-      })
-      .then((data) => {
-        setPortfolio(data);
+    api.get('/api/portfolio')
+      .then((res) => {
+        setPortfolio(res.data);
         setLoading(false);
       })
       .catch((err) => {
