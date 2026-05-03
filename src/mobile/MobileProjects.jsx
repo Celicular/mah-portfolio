@@ -1,41 +1,54 @@
+import { useState, useEffect } from 'react';
 import { Github } from 'lucide-react';
-
-const projects = [
-  {
-    title: "CensorAI",
-    type: "AI / NLP Moderation System",
-    tech: ["Python", "NLP", "Machine Learning", "Video Processing", "AI Moderation"],
-    image: "/project/main.png",
-    desc: "An AI-powered social media moderation prototype that detects and flags hate speech or offensive content in uploaded videos. Using Natural Language Processing and machine learning models, the system analyzes spoken and textual content in real time to maintain a safer online environment.",
-    link: "https://github.com/Celicular/TechDx404-NLP-censorAI"
-  },
-  {
-    title: "LetsLearn",
-    type: "AI Learning Platform",
-    tech: ["Python", "RAG", "Local LLM", "Vector Databases", "Document Processing"],
-    image: "/project/1.png",
-    desc: "An intelligent offline educational application that transforms documents into interactive learning tools. Built with Retrieval-Augmented Generation (RAG), it allows users to upload study materials and query them using AI—running completely locally without requiring internet access.",
-    link: "https://github.com/Celicular/lets-learn"
-  },
-  {
-    title: "Clarity ERP",
-    type: "Enterprise Software",
-    tech: ["Full Stack", "Monolithic Architecture", "Workflow Automation", "Database Systems"],
-    image: "/project/2.png",
-    desc: "An enterprise-grade ERP command center designed to centralize and automate workforce management. The platform replaces fragmented SaaS tools by providing a unified ecosystem for business operations, task orchestration, and data-driven decision making.",
-    link: "https://github.com/Celicular/Clarity-ERP"
-  },
-  { 
-    title: "Cap2Easy",
-    type: "AI Video Tool",
-    tech: ["Python", "OpenAI Whisper", "Speech Recognition", "GPU Acceleration", "Video Rendering"],
-    image: "/project/3.png",
-    desc: "A powerful video captioning system that automatically generates accurate subtitles using OpenAI Whisper speech recognition. It supports custom fonts, multilingual transcription, real-time preview, and GPU acceleration for fast high-quality caption rendering.",
-    link: "https://github.com/Celicular/Celi-Cap2Easy"
-  },
-];
+import { parseImageUrl } from '../utils/imageUtils';
 
 const MobileProjects = () => {
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetch('/api/projects')
+      .then((r) => {
+        if (!r.ok) throw new Error('Failed to load projects');
+        return r.json();
+      })
+      .then((data) => {
+        setProjects(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setError('Could not load project data.');
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return (
+      <section className="py-24 relative bg-surface border-t border-white/5 flex flex-col items-center justify-center min-h-[50vh] gap-4">
+        <div className="flex gap-2">
+          {[0, 1, 2].map((i) => (
+            <div
+              key={i}
+              className="w-3 h-3 rounded-full bg-primary animate-bounce"
+              style={{ animationDelay: `${i * 0.15}s` }}
+            />
+          ))}
+        </div>
+        <p className="text-text-muted text-sm font-mono">Loading projects…</p>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="py-24 relative bg-surface border-t border-white/5 flex items-center justify-center min-h-[50vh]">
+        <p className="text-red-400 font-mono text-sm">{error}</p>
+      </section>
+    );
+  }
+
   return (
     <section id="projects" className="py-20 relative bg-surface border-t border-white/5 overflow-hidden">
       <div className="container mx-auto px-6">
@@ -51,15 +64,21 @@ const MobileProjects = () => {
 
         <div className="flex flex-col gap-10">
           {projects.map((project, idx) => (
-            <div key={idx} className="glass p-5 rounded-3xl border border-white/10 shadow-2xl relative flex flex-col">
+            <div key={project.id || idx} className="glass p-5 rounded-3xl border border-white/10 shadow-2xl relative flex flex-col">
               
               {/* Image Preview */}
               <div className="relative overflow-hidden aspect-video rounded-2xl mb-6 shadow-xl border border-white/10">
                 <img 
-                  src={project.image} 
+                  src={parseImageUrl(project.image)} 
                   alt={project.title} 
                   className="w-full h-full object-cover" 
                 />
+                <div className="absolute inset-0 bg-gradient-to-tr from-background/40 to-transparent opacity-30 pointer-events-none rounded-2xl" />
+                {project.under_development && (
+                  <div className="absolute top-4 right-4 z-20 px-3 py-1.5 bg-amber-500/90 text-black text-[10px] font-bold uppercase tracking-widest rounded-full shadow-lg backdrop-blur-md">
+                    Under Development
+                  </div>
+                )}
               </div>
 
               {/* Data */}
@@ -68,6 +87,11 @@ const MobileProjects = () => {
                   <span className="px-3 py-1 text-[10px] font-bold uppercase tracking-widest bg-primary/20 text-primary rounded-full border border-primary/30 shadow-[0_0_15px_rgba(139,92,246,0.3)]">
                     {project.type}
                   </span>
+                  {project.under_development && (
+                    <span className="px-3 py-1 text-[10px] font-bold uppercase tracking-widest bg-amber-500/20 text-amber-500 rounded-full border border-amber-500/30 shadow-[0_0_15px_rgba(245,158,11,0.3)]">
+                      Under Development
+                    </span>
+                  )}
                 </div>
 
                 <h3 className="text-3xl font-black font-mono text-white mb-4 tracking-tight leading-none">
@@ -82,7 +106,7 @@ const MobileProjects = () => {
                 <div className="mb-8">
                   <h4 className="text-xs font-semibold text-white/50 uppercase tracking-widest mb-3">Tech Stack</h4>
                   <div className="flex flex-wrap items-start gap-2">
-                    {project.tech.map(t => (
+                    {(project.tech || []).map(t => (
                       <span key={t} className="px-2 py-1 bg-white/5 border border-white/10 rounded-md text-xs text-text-muted">
                         {t}
                       </span>

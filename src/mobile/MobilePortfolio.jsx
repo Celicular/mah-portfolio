@@ -1,51 +1,54 @@
+import { useState, useEffect } from 'react';
 import { ExternalLink } from 'lucide-react';
-
-const portfolio = [
-  {
-    title: "Cruise Booking Desk",
-    category: "React & PostgreSQL",
-    image: "/portfolio/2.png",
-    desc: "A large-scale cruise travel booking platform built with React and PostgreSQL, designed for high performance, seamless navigation, and real-time travel package management.",
-    link: "https://cruisebookingdesk.com"
-  },
-  {
-    title: "Book Holiday Rental",
-    category: "React & PHP",
-    image: "/portfolio/1.png",
-    desc: "A vacation rental marketplace enabling property listings, booking inquiries, and dynamic property management. Built with React and PHP for reliable server-side functionality.",
-    link: "https://bookholidayrental.com"
-  },
-  {
-    title: "340 Real Estate",
-    category: "Next.js & PostgreSQL",
-    image: "/portfolio/3.png",
-    desc: "A modern real estate platform powered by Next.js and PostgreSQL, featuring dynamic property listings, optimized performance, and scalable backend infrastructure.",
-    link: "https://340realestate.com"
-  },
-  {
-    title: "Algharbiaco",
-    category: "React & PHP",
-    image: "/portfolio/6.png",
-    desc: "An international corporate website developed for a global client, delivering a professional digital presence with modern UI design and reliable backend integration.",
-    link: "https://algharbiaco.com"
-  },
-  {
-    title: "Australia Vacation Rental",
-    category: "React + Vite & PHP",
-    image: "/portfolio/4.png",
-    desc: "A fast and scalable vacation rental platform built using React with Vite and PHP, optimized for property discovery, booking inquiries, and seamless user experience.",
-    link: "https://australiavacationrental.com"
-  },
-  {
-    title: "New Zealand Stays",
-    category: "React + Vite & PHP",
-    image: "/portfolio/5.png",
-    desc: "A property rental platform tailored for the New Zealand market, featuring responsive UI, efficient property listings, and fast performance powered by React, Vite, and PHP.",
-    link: "https://newzealandstays.com"
-  }
-];
+import { parseImageUrl } from '../utils/imageUtils';
 
 const MobilePortfolio = () => {
+  const [portfolio, setPortfolio] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetch('/api/portfolio')
+      .then((r) => {
+        if (!r.ok) throw new Error('Failed to load portfolio');
+        return r.json();
+      })
+      .then((data) => {
+        setPortfolio(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setError('Could not load portfolio data.');
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return (
+      <section className="py-20 relative bg-background flex flex-col items-center justify-center min-h-[50vh] gap-4">
+        <div className="flex gap-2">
+          {[0, 1, 2].map((i) => (
+            <div
+              key={i}
+              className="w-3 h-3 rounded-full bg-primary animate-bounce"
+              style={{ animationDelay: `${i * 0.15}s` }}
+            />
+          ))}
+        </div>
+        <p className="text-text-muted text-sm font-mono">Loading portfolio…</p>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="py-20 relative bg-background flex items-center justify-center min-h-[50vh]">
+        <p className="text-red-400 font-mono text-sm">{error}</p>
+      </section>
+    );
+  }
+
   return (
     <section id="portfolio" className="py-20 relative overflow-hidden bg-background flex flex-col">
       {/* Background blobs */}
@@ -63,23 +66,35 @@ const MobilePortfolio = () => {
 
       <div className="container mx-auto px-6 relative z-10 flex flex-col gap-10">
         {portfolio.map((project, idx) => (
-          <div key={idx} className="flex flex-col glass rounded-3xl overflow-hidden border border-white/10 shadow-2xl relative">
+          <div key={project.id || idx} className="flex flex-col glass rounded-3xl overflow-hidden border border-white/10 shadow-2xl relative">
             
             {/* Image section */}
             <div className="w-full aspect-video relative">
               <img 
-                src={project.image} 
+                src={parseImageUrl(project.image)} 
                 alt={project.title} 
                 className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent opacity-80"></div>
+              {project.under_development && (
+                <div className="absolute top-4 right-4 z-20 px-3 py-1.5 bg-amber-500/90 text-black text-[10px] font-bold uppercase tracking-widest rounded-full shadow-lg backdrop-blur-md">
+                  Under Development
+                </div>
+              )}
             </div>
 
             {/* Content section */}
-            <div className="p-6 relative z-10 -mt-[100px] pt-0">
-               <span className="inline-block px-3 py-1 mb-3 text-[10px] font-bold uppercase tracking-widest bg-primary/30 text-white rounded-full border border-primary/50 shadow-sm backdrop-blur-md">
-                 {project.category}
-               </span>
+            <div className="p-6 relative z-10 -mt-[100px] pt-0 flex flex-col">
+               <div className="flex flex-wrap gap-2 mb-3">
+                 <span className="inline-block px-3 py-1 text-[10px] font-bold uppercase tracking-widest bg-primary/30 text-white rounded-full border border-primary/50 shadow-sm backdrop-blur-md">
+                   {project.category}
+                 </span>
+                 {project.under_development && (
+                   <span className="inline-block px-3 py-1 text-[10px] font-bold uppercase tracking-widest bg-amber-500/20 text-amber-500 rounded-full border border-amber-500/30 shadow-sm backdrop-blur-md">
+                     Under Development
+                   </span>
+                 )}
+               </div>
                <h3 className="text-2xl font-black font-mono text-white tracking-tight leading-none mb-3 drop-shadow-md">
                  {project.title}
                </h3>
