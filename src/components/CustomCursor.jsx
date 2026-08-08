@@ -14,7 +14,7 @@ const CustomCursor = () => {
     canvas.height = height;
 
     let particlesArray = [];
-    let hue = 260; // Violet base hue
+    let hue = 190; // Light blue base hue
 
     const mouse = {
       x: null,
@@ -88,7 +88,7 @@ const CustomCursor = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       handleParticles();
       hue += 2; // slight color shifting
-      if (hue > 280) hue = 250; // keep it within purple bounds
+      if (hue > 210) hue = 180; // keep it within blue bounds
       requestAnimationFrame(animate);
     }
     

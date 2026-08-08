@@ -146,7 +146,7 @@ export default function AdminPanel() {
       <header className="sticky top-0 z-40 bg-[#09090b]/80 backdrop-blur-md border-b border-white/10">
         <div className="container mx-auto px-6 max-w-5xl h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-violet-600 rounded-lg flex items-center justify-center font-bold font-mono">
+            <div className="w-8 h-8 bg-sky-600 rounded-lg flex items-center justify-center font-bold font-mono">
               C
             </div>
             <span className="font-bold tracking-tight">Admin Dashboard</span>
@@ -171,7 +171,7 @@ export default function AdminPanel() {
           </div>
           <button 
             onClick={openCreateModal}
-            className="bg-violet-600 hover:bg-violet-700 text-white px-5 py-2.5 rounded-xl font-medium flex items-center justify-center gap-2 transition-all shadow-lg shadow-violet-600/20"
+            className="bg-sky-600 hover:bg-sky-700 text-white px-5 py-2.5 rounded-xl font-medium flex items-center justify-center gap-2 transition-all shadow-lg shadow-sky-600/20"
           >
             <Plus size={18} /> Add New {activeTab === 'portfolio' ? 'Portfolio Item' : 'Project'}
           </button>
@@ -203,7 +203,7 @@ export default function AdminPanel() {
           <div className="py-20 flex flex-col items-center justify-center gap-4 text-white/50">
             <div className="flex gap-2">
               {[0, 1, 2].map((i) => (
-                <div key={i} className="w-2.5 h-2.5 rounded-full bg-violet-600 animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
+                <div key={i} className="w-2.5 h-2.5 rounded-full bg-sky-600 animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
               ))}
             </div>
             <span className="text-sm">Loading data...</span>

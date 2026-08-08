@@ -82,13 +82,13 @@ const Contact = () => {
               target="_blank" 
               rel="noopener noreferrer"
               ref={el => socialRef.current[idx] = el}
-              className="group relative flex items-center justify-between p-6 md:p-8 rounded-[2rem] glass border border-white/5 overflow-hidden transition-all duration-500 hover:border-primary/40 hover:shadow-[0_0_40px_rgba(139,92,246,0.15)] hover:-translate-y-2 bg-background/50 hover:bg-background/80"
+              className="group relative flex items-center justify-between p-6 md:p-8 rounded-[2rem] glass border border-white/5 overflow-hidden transition-all duration-500 hover:border-primary/40 hover:shadow-[0_0_40px_rgba(56,189,248,0.15)] hover:-translate-y-2 bg-background/50 hover:bg-background/80"
             >
               {/* Animated Background Highlight */}
               <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               
               <div className="flex items-center gap-6 relative z-10">
-                <div className="w-16 h-16 rounded-full bg-white/5 border border-white/5 flex items-center justify-center text-text-muted group-hover:text-white group-hover:bg-primary/20 group-hover:border-primary/30 group-hover:shadow-[0_0_20px_rgba(139,92,246,0.2)] transition-all duration-500 transform-gpu">
+                <div className="w-16 h-16 rounded-full bg-white/5 border border-white/5 flex items-center justify-center text-text-muted group-hover:text-white group-hover:bg-primary/20 group-hover:border-primary/30 group-hover:shadow-[0_0_20px_rgba(56,189,248,0.2)] transition-all duration-500 transform-gpu">
                   {social.icon}
                 </div>
                 <div className="flex flex-col items-start justify-center">

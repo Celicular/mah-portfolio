@@ -132,7 +132,7 @@ const Projects = () => {
                 >
                   {/* Badge */}
                   <div className="flex flex-wrap items-center gap-3 mb-6">
-                    <span className="px-4 py-1.5 text-xs font-bold uppercase tracking-widest bg-primary/20 text-primary rounded-full border border-primary/30 shadow-[0_0_15px_rgba(139,92,246,0.3)]">
+                    <span className="px-4 py-1.5 text-xs font-bold uppercase tracking-widest bg-primary/20 text-primary rounded-full border border-primary/30 shadow-[0_0_15px_rgba(56,189,248,0.3)]">
                       {activeProject.type}
                     </span>
                     {activeProject.under_development && (
@@ -218,7 +218,7 @@ const Projects = () => {
             href="https://github.com/celicular"
             target="_blank"
             rel="noopener noreferrer"
-            className="group relative inline-flex items-center gap-4 px-10 py-5 bg-white/5 border border-white/10 rounded-2xl hover:border-primary/50 transition-all duration-500 hover:shadow-[0_0_50px_rgba(139,92,246,0.15)] overflow-hidden"
+            className="group relative inline-flex items-center gap-4 px-10 py-5 bg-white/5 border border-white/10 rounded-2xl hover:border-primary/50 transition-all duration-500 hover:shadow-[0_0_50px_rgba(56,189,248,0.15)] overflow-hidden"
           >
             <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
             <Github className="text-primary group-hover:scale-110 transition-transform" size={24} />

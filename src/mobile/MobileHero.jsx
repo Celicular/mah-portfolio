@@ -6,18 +6,10 @@ const MobileHero = () => {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] h-[90vw] bg-primary/20 rounded-full blur-[100px] -z-10 pointer-events-none"></div>
 
       <div className="container mx-auto px-6 relative z-10 flex flex-col items-center justify-center text-center h-full">
-        
-        {/* Top Portrait (Simplified relative to desktop) */}
-        <div className="w-32 h-40 mb-2 z-40 transform -rotate-3">
-          <div className="w-full h-full bg-surface border border-white/20 rounded-2xl flex items-center justify-center overflow-hidden shadow-2xl">
-            <img src="/celi1.png" className="w-full h-full object-cover opacity-80" alt="portrait 1"/>
-          </div>
-        </div>
-
         <div className="flex flex-col items-center justify-center z-20 w-full mt-[-20px]">
           <h1 className="text-[28vw] font-mono font-black tracking-tighter leading-none relative z-10 flex items-center justify-center" style={{ paddingBottom: '10px' }}>
             <span className="text-slate-200">C</span>
-            <span className="text-violet-400">€</span>
+            <span className="text-sky-400">€</span>
             <span className="text-slate-200">LI</span>
           </h1>
 
@@ -31,13 +23,6 @@ const MobileHero = () => {
             <p className="w-full max-w-sm text-base text-text-muted font-light px-6 py-3 glass rounded-full border border-white/10 shadow-xl text-center leading-relaxed">
               Friendly neighborhood developer
             </p>
-          </div>
-        </div>
-
-        {/* Second Portrait - Background blur to fill space */}
-        <div className="w-28 h-36 absolute top-10 right-0 z-0 transform rotate-12 opacity-30 blur-[2px]">
-          <div className="w-full h-full bg-surface border border-white/20 rounded-2xl overflow-hidden shadow-2xl">
-             <img src="/celi2.png" className="w-full h-full object-cover" alt="portrait 2"/>
           </div>
         </div>
 

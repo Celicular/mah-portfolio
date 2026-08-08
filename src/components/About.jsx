@@ -37,8 +37,8 @@ const About = () => {
           scrollTrigger: {
             trigger: containerRef.current,
             start: "top top", // Triggers when the section completely loads
-            end: "+=800", // Finishes after scrolling starts
-            scrub: 1, // Smooth scrub
+            end: "+=400", // Finishes faster
+            scrub: 0.5, // Snappier scrub
           },
           scale: 1, 
           x: "0%", 
@@ -83,14 +83,12 @@ const About = () => {
         
         {/* Left Side: Image */}
         <div className="md:w-5/12 flex justify-center w-full mb-10 md:mb-0 relative" ref={imageWrapperRef}>
-          <div className="relative w-full max-w-sm aspect-[4/5] rounded-[2rem] overflow-hidden glass shadow-[0_0_80px_rgba(139,92,246,0.15)] border border-primary/20 transform-gpu">
+          <div className="relative w-full max-w-sm aspect-[4/5] rounded-[2rem] overflow-hidden shadow-[0_0_80px_rgba(56,189,248,0.15)] border border-primary/20 transform-gpu">
             <img 
               src="/celi3.png" 
               alt="Programming Workspace" 
-              className="w-full h-full object-cover opacity-80" 
+              className="w-full h-full object-cover" 
             />
-            {/* Futuristic purple overlay */}
-            <div className="absolute inset-0 bg-gradient-to-tr from-background/90 via-primary/20 to-transparent"></div>
           </div>
         </div>
 
@@ -130,7 +128,7 @@ const About = () => {
                 e.preventDefault();
                 document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="inline-flex items-center justify-center px-8 py-4 rounded-full border border-primary/50 text-white font-bold bg-primary/10 hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 tracking-wide text-lg shadow-[0_0_20px_rgba(139,92,246,0.2)]"
+              className="inline-flex items-center justify-center px-8 py-4 rounded-full border border-primary/50 text-white font-bold bg-primary/10 hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 tracking-wide text-lg shadow-[0_0_20px_rgba(56,189,248,0.2)]"
             >
               Explore My Work
             </a>
@@ -140,7 +138,7 @@ const About = () => {
               {textPhrases.map((_, i) => (
                 <div 
                   key={i} 
-                  className={`h-1.5 rounded-full transition-all duration-500 ${activePhraseIndex === i ? 'w-8 bg-primary shadow-[0_0_10px_rgba(139,92,246,0.8)]' : 'w-2 bg-white/20'}`}
+                  className={`h-1.5 rounded-full transition-all duration-500 ${activePhraseIndex === i ? 'w-8 bg-primary shadow-[0_0_10px_rgba(56,189,248,0.8)]' : 'w-2 bg-white/20'}`}
                 />
               ))}
             </div>

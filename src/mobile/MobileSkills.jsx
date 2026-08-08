@@ -12,9 +12,42 @@ const pages = [
   { title: "Soft Skills", icon: <Lightbulb className="w-5 h-5 text-primary" />, skills: ["Agile", "Problem Solving", "UI/UX"] }
 ];
 
+import { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
+
 const MobileSkills = () => {
+  const containerRef = useRef(null);
+  
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const cards = gsap.utils.toArray('.mobile-skill-card');
+      if (cards.length) {
+        cards.forEach((card, index) => {
+          gsap.fromTo(card, 
+            { x: -50, opacity: 0 },
+            { 
+              scrollTrigger: {
+                trigger: card,
+                start: "top 90%", // Trigger exactly when the element enters 90% down the viewport
+              },
+              x: 0, 
+              opacity: 1, 
+              duration: 0.5,
+              delay: index * 0.05, // Subtle stagger for grid items
+              ease: "power2.out"
+            }
+          );
+        });
+      }
+    }, containerRef);
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section id="skills" className="py-20 relative bg-surface border-t border-white/5 overflow-hidden">
+    <section ref={containerRef} id="skills" className="py-20 relative bg-surface border-t border-white/5 overflow-hidden">
       
       {/* Absolute Background element */}
       <div className="absolute top-0 w-full h-[60vw] bg-primary/10 rounded-full blur-[100px] pointer-events-none z-0"></div>
@@ -33,7 +66,7 @@ const MobileSkills = () => {
           {pages.map((card, j) => (
             <div 
               key={j} 
-              className="skill-card w-full glass p-5 rounded-2xl border border-white/10 shadow-lg flex flex-col items-center text-center"
+              className="skill-card mobile-skill-card w-full glass p-5 rounded-2xl border border-white/10 shadow-lg flex flex-col items-center text-center"
             >
               <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center mb-4">
                 {card.icon}

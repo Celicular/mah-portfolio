@@ -1,9 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Github } from 'lucide-react';
 import { parseImageUrl } from '../utils/imageUtils';
 import api from '../utils/axios';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const MobileProjects = () => {
+  const containerRef = useRef(null);
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -20,6 +25,31 @@ const MobileProjects = () => {
         setLoading(false);
       });
   }, []);
+
+  useEffect(() => {
+    if (projects.length === 0) return;
+    const ctx = gsap.context(() => {
+      const cards = gsap.utils.toArray('.mobile-project-card');
+      if (cards.length) {
+        cards.forEach((card, index) => {
+          gsap.fromTo(card, 
+            { x: -50, opacity: 0 },
+            { 
+              scrollTrigger: {
+                trigger: card,
+                start: "top 85%", // Trigger exactly when the element enters 85% down the viewport
+              },
+              x: 0, 
+              opacity: 1, 
+              duration: 0.5,
+              ease: "power2.out"
+            }
+          );
+        });
+      }
+    }, containerRef);
+    return () => ctx.revert();
+  }, [projects]);
 
   if (loading) {
     return (
@@ -47,7 +77,7 @@ const MobileProjects = () => {
   }
 
   return (
-    <section id="projects" className="py-20 relative bg-surface border-t border-white/5 overflow-hidden">
+    <section ref={containerRef} id="projects" className="py-20 relative bg-surface border-t border-white/5 overflow-hidden">
       <div className="container mx-auto px-6">
         
         <div className="mb-10 text-center">
@@ -61,7 +91,7 @@ const MobileProjects = () => {
 
         <div className="flex flex-col gap-10">
           {projects.map((project, idx) => (
-            <div key={project.id || idx} className="glass p-5 rounded-3xl border border-white/10 shadow-2xl relative flex flex-col">
+            <div key={project.id || idx} className="glass mobile-project-card p-5 rounded-3xl border border-white/10 shadow-2xl relative flex flex-col">
               
               {/* Image Preview */}
               <div className="relative overflow-hidden aspect-video rounded-2xl mb-6 shadow-xl border border-white/10">
@@ -81,7 +111,7 @@ const MobileProjects = () => {
               {/* Data */}
               <div className="flex flex-col flex-1">
                 <div className="flex flex-wrap items-center gap-2 mb-4">
-                  <span className="px-3 py-1 text-[10px] font-bold uppercase tracking-widest bg-primary/20 text-primary rounded-full border border-primary/30 shadow-[0_0_15px_rgba(139,92,246,0.3)]">
+                  <span className="px-3 py-1 text-[10px] font-bold uppercase tracking-widest bg-primary/20 text-primary rounded-full border border-primary/30 shadow-[0_0_15px_rgba(56,189,248,0.3)]">
                     {project.type}
                   </span>
                   {project.under_development && (

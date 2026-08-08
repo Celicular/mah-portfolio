@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #8b5cf6; /* Vibrant Violet */
-  --color-background: #050505; /* Slightly lighter black for contrast */
-  --color-surface: #0f1115;
+  --color-primary: #38bdf8; /* Light Blue */
+  --color-background: #0a0a0a; /* Matte Black */
+  --color-surface: #171717; /* Slightly lighter black for contrast */
   --color-text: #ffffff;
   --color-text-muted: #9ca3af;
   
@@ -66,7 +66,7 @@
   }
   
   .text-glow {
-    text-shadow: 0 0 20px rgba(139, 92, 246, 0.5); /* updated to vibrant violet glow */
+    text-shadow: 0 0 20px rgba(56, 189, 248, 0.5); /* updated to light blue glow */
   }
 
   .animate-glow {
@@ -76,9 +76,9 @@
 
 @keyframes glow-pulse {
   0%, 100% {
-    filter: drop-shadow(0 0 10px rgba(139, 92, 246, 0.3)) drop-shadow(0 0 20px rgba(139, 92, 246, 0.2));
+    filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.3)) drop-shadow(0 0 20px rgba(56, 189, 248, 0.2));
   }
   50% {
-    filter: drop-shadow(0 0 25px rgba(139, 92, 246, 0.6)) drop-shadow(0 0 45px rgba(139, 92, 246, 0.3));
+    filter: drop-shadow(0 0 25px rgba(56, 189, 248, 0.6)) drop-shadow(0 0 45px rgba(56, 189, 248, 0.3));
   }
 }

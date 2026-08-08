@@ -14,7 +14,7 @@ const DebugLines = () => {
             bendStrength={15}
             interactive={true}
             parallax={true}
-            linesGradient={['#8b5cf6', '#ffffff', '#8b5cf6']}
+            linesGradient={['#38bdf8', '#ffffff', '#38bdf8']}
         />
     </div>
   );

@@ -1,9 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { ExternalLink } from 'lucide-react';
 import { parseImageUrl } from '../utils/imageUtils';
 import api from '../utils/axios';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const MobilePortfolio = () => {
+  const containerRef = useRef(null);
   const [portfolio, setPortfolio] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -20,6 +25,31 @@ const MobilePortfolio = () => {
         setLoading(false);
       });
   }, []);
+
+  useEffect(() => {
+    if (portfolio.length === 0) return;
+    const ctx = gsap.context(() => {
+      const cards = gsap.utils.toArray('.mobile-portfolio-card');
+      if (cards.length) {
+        cards.forEach((card, index) => {
+          gsap.fromTo(card, 
+            { x: -50, opacity: 0 },
+            { 
+              scrollTrigger: {
+                trigger: card,
+                start: "top 85%", // Trigger exactly when the element enters 85% down the viewport
+              },
+              x: 0, 
+              opacity: 1, 
+              duration: 0.5,
+              ease: "power2.out"
+            }
+          );
+        });
+      }
+    }, containerRef);
+    return () => ctx.revert();
+  }, [portfolio]);
 
   if (loading) {
     return (
@@ -47,7 +77,7 @@ const MobilePortfolio = () => {
   }
 
   return (
-    <section id="portfolio" className="py-20 relative overflow-hidden bg-background flex flex-col">
+    <section ref={containerRef} id="portfolio" className="py-20 relative overflow-hidden bg-background flex flex-col">
       {/* Background blobs */}
       <div className="absolute top-0 right-0 w-[80vw] h-[80vw] bg-primary/5 blur-[100px] rounded-full pointer-events-none z-0"></div>
 
@@ -63,7 +93,7 @@ const MobilePortfolio = () => {
 
       <div className="container mx-auto px-6 relative z-10 flex flex-col gap-10">
         {portfolio.map((project, idx) => (
-          <div key={project.id || idx} className="flex flex-col glass rounded-3xl overflow-hidden border border-white/10 shadow-2xl relative">
+          <div key={project.id || idx} className="mobile-portfolio-card flex flex-col glass rounded-3xl overflow-hidden border border-white/10 shadow-2xl relative">
             
             {/* Image section */}
             <div className="w-full aspect-video relative">

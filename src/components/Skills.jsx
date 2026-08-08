@@ -124,7 +124,7 @@ const Skills = () => {
         {[0, 1, 2].map((dot) => (
           <div 
             key={dot} 
-            className={`h-2 rounded-full transition-all duration-500 ${activePageIndex === dot ? 'w-8 bg-primary shadow-[0_0_10px_rgba(139,92,246,0.8)]' : 'w-2 bg-white/20'}`}
+            className={`h-2 rounded-full transition-all duration-500 ${activePageIndex === dot ? 'w-8 bg-primary shadow-[0_0_10px_rgba(56,189,248,0.8)]' : 'w-2 bg-white/20'}`}
           />
         ))}
       </div>

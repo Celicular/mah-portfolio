@@ -28,7 +28,7 @@ const FloatingLogo = () => {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 20, scale: 0.5 }}
                 transition={{ delay: (socials.length - 1 - idx) * 0.05, duration: 0.3 }}
-                className="w-12 h-12 flex items-center justify-center bg-white/10 backdrop-blur-xl border border-white/20 rounded-full text-white hover:bg-primary/20 hover:border-primary/50 hover:shadow-[0_0_20px_rgba(139,92,246,0.3)] transition-all duration-300 group relative"
+                className="w-12 h-12 flex items-center justify-center bg-white/10 backdrop-blur-xl border border-white/20 rounded-full text-white hover:bg-primary/20 hover:border-primary/50 hover:shadow-[0_0_20px_rgba(56,189,248,0.3)] transition-all duration-300 group relative"
                 title={social.label}
               >
                 {social.icon}
