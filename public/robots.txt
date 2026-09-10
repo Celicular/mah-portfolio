@@ -1,5 +1,4 @@
 User-agent: *
 Allow: /
 
-# Sitemap location
 Sitemap: https://celi.me/sitemap.xml

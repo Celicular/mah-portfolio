@@ -1,100 +1,171 @@
-import { Mail, Phone, MapPin, Github, Instagram, MessageCircle, Heart, Coffee } from 'lucide-react';
+import React from 'react';
+import { motion } from 'framer-motion';
 
-const Footer = () => {
+export default function Footer() {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1, 
+      transition: { staggerChildren: 0.1, delayChildren: 0.2 } 
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 50 } }
+  };
+
+  const handleScrollTo = (e, href) => {
+    e.preventDefault();
+    const targetId = href.replace('#', '');
+    if (targetId === 'home') {
+      if (window.lenis) {
+        window.lenis.scrollTo(0, { duration: 1.5 });
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      return;
+    }
+    const targetElement = document.getElementById(targetId);
+    if (targetElement) {
+      if (window.lenis) {
+        window.lenis.scrollTo(targetElement, { offset: -40, duration: 1.5 });
+      } else {
+        targetElement.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
+
   return (
-    <footer className="pt-24 pb-12 bg-background border-t border-white/5 relative z-10 overflow-hidden">
-      
-      {/* Subtle Background Glow */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[60vw] h-[60vw] bg-primary/5 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
-
-      <div className="container mx-auto px-6 max-w-7xl">
-        
-        {/* Quote Section */}
-        <div className="mb-24 text-center">
-          <h2 className="text-3xl md:text-5xl font-mono font-black text-white/10 uppercase tracking-tighter italic leading-tight max-w-4xl mx-auto select-none">
-            "Talk is cheap... <span className="text-primary/10">Show me the Code</span>"
-          </h2>
-          <span className="text-[10px] md:text-xs font-mono text-white/20 uppercase tracking-[0.6em] block mt-6">
-            — Linus Torvalds
-          </span>
-        </div>
-
-        {/* Info Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-8 mb-24 border-y border-white/5 py-16">
+    <footer className="w-full bg-[#111111] pt-24 pb-12 px-6 rounded-t-[3rem] md:rounded-t-[5rem] relative z-20 mt-[-2rem]">
+      <motion.div 
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        variants={containerVariants}
+        className="max-w-7xl mx-auto"
+      >
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-20">
           
-          {/* Identity */}
-          <div className="flex flex-col items-center md:items-start text-center md:text-left">
-            <h1 className="text-4xl md:text-5xl font-mono font-black tracking-tighter mb-6 flex items-center">
-              C<span className="text-primary">€</span>LI
-            </h1>
-            <p className="text-text-muted text-lg font-light leading-relaxed max-w-[300px]">
-              Crafting futuristic digital architectures through minimal design and high-performance engineering.
+          <motion.div variants={itemVariants} className="col-span-1 md:col-span-2">
+            <div 
+              onClick={(e) => handleScrollTo(e, '#home')}
+              className="flex items-center gap-3 mb-8 cursor-pointer select-none"
+            >
+              <div className="w-10 h-10 rounded-full bg-[#4884F5] flex items-center justify-center text-white font-black text-xl font-display">
+                H
+              </div>
+              <span className="font-black text-3xl tracking-wide text-white font-display">Himadri.</span>
+            </div>
+            <p className="text-slate-400 text-lg max-w-sm mb-8 leading-relaxed">
+              Crafting scalable technical architecture, high-impact product solutions, and robust digital platforms that deliver real business impact.
             </p>
-          </div>
-
-          {/* Direct Connect */}
-          <div className="flex flex-col items-center md:items-start text-center md:text-left gap-4">
-            <h4 className="text-sm font-semibold text-white/50 uppercase tracking-widest mb-4">Direct Communication</h4>
-            <a href="mailto:hsg090907.jsr@gmail.com" className="flex items-center gap-4 text-white hover:text-primary transition-colors group">
-              <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-primary/20 transition-all">
-                <Mail size={18} />
-              </div>
-              <span className="text-lg md:text-xl font-mono">hsg090907.jsr@gmail.com</span>
-            </a>
-            {/* Added social cluster for quick access */}
-            <div className="flex flex-wrap gap-4 mt-6">
-              {[
-                { icon: <Github size={20} />, href: "https://github.com/celicular" },
-                { icon: <Instagram size={20} />, href: "https://instagram.com/da.narcissistic_guy" },
-                { icon: <MessageCircle size={20} />, href: "https://wa.me/919942868093" }
-              ].map((s, i) => (
-                <a key={i} href={s.href} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-text-muted hover:text-white hover:border-primary/50 transition-all">
-                  {s.icon}
-                </a>
-              ))}
-              
-              {/* Buy Me a Coffee */}
-              <button 
-                onClick={() => alert("not added yet...")}
-                className="flex items-center gap-2 px-4 py-2 bg-amber-500/10 border border-amber-500/20 rounded-full text-amber-500 hover:bg-amber-500 hover:text-white transition-all duration-300 text-[10px] font-bold uppercase tracking-wider"
+            <div className="flex flex-wrap gap-3">
+              {/* GitHub */}
+              <motion.a 
+                whileHover={{ scale: 1.1, y: -4 }} 
+                href="https://github.com/celicular" 
+                target="_blank" 
+                rel="noreferrer"
+                title="GitHub"
+                className="w-11 h-11 rounded-full bg-[#1c1c1c] flex items-center justify-center text-white hover:bg-[#4884F5] transition-colors"
               >
-                <Coffee size={14} /> Buy me a coffee
-              </button>
-            </div>
-          </div>
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+              </motion.a>
 
-          {/* Location / Current Orbit */}
-          <div className="flex flex-col items-center md:items-start text-center md:text-left">
-            <h4 className="text-sm font-semibold text-white/50 uppercase tracking-widest mb-4">Location</h4>
-            <div className="flex items-start gap-4 text-text-muted">
-              <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center shrink-0">
-                <MapPin size={18} />
-              </div>
-              <p className="text-lg md:text-xl font-mono leading-tight">
-                Operating remotely from<br/>
-                <span className="text-white">India</span>
-              </p>
+              {/* LinkedIn */}
+              <motion.a 
+                whileHover={{ scale: 1.1, y: -4 }} 
+                href="https://www.linkedin.com/in/himadrishekhar-goswami-59b631335/" 
+                target="_blank" 
+                rel="noreferrer"
+                title="LinkedIn"
+                className="w-11 h-11 rounded-full bg-[#1c1c1c] flex items-center justify-center text-white hover:bg-[#4884F5] transition-colors"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+              </motion.a>
+
+              {/* Instagram */}
+              <motion.a 
+                whileHover={{ scale: 1.1, y: -4 }} 
+                href="https://instagram.com/da.narcissistic_guy" 
+                target="_blank" 
+                rel="noreferrer"
+                title="Instagram"
+                className="w-11 h-11 rounded-full bg-[#1c1c1c] flex items-center justify-center text-white hover:bg-[#4884F5] transition-colors"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+              </motion.a>
+
+              {/* WhatsApp */}
+              <motion.a 
+                whileHover={{ scale: 1.1, y: -4 }} 
+                href="https://wa.me/919942868093" 
+                target="_blank" 
+                rel="noreferrer"
+                title="WhatsApp"
+                className="w-11 h-11 rounded-full bg-[#1c1c1c] flex items-center justify-center text-white hover:bg-[#25D366] transition-colors"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"/></svg>
+              </motion.a>
+
+              {/* Email */}
+              <motion.a 
+                whileHover={{ scale: 1.1, y: -4 }} 
+                href="mailto:hsg090907.jsr@gmail.com" 
+                title="Email"
+                className="w-11 h-11 rounded-full bg-[#1c1c1c] flex items-center justify-center text-white hover:bg-[#4884F5] transition-colors"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
+              </motion.a>
             </div>
-            <div className="mt-10 flex items-center gap-2 px-4 py-2 bg-green-500/10 border border-green-500/20 rounded-full">
-              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-              <span className="text-[10px] font-bold uppercase tracking-widest text-green-500">Available for Collaborate</span>
-            </div>
-          </div>
+          </motion.div>
+
+          <motion.div variants={itemVariants}>
+            <h4 className="text-white font-bold text-xl mb-6 font-display">Quick Links</h4>
+            <ul className="flex flex-col gap-4 text-slate-400 font-medium">
+              <li><a href="#home" onClick={(e) => handleScrollTo(e, '#home')} className="hover:text-[#4884F5] transition-colors">Home</a></li>
+              <li><a href="#services" onClick={(e) => handleScrollTo(e, '#services')} className="hover:text-[#4884F5] transition-colors">Services</a></li>
+              <li><a href="#portfolio" onClick={(e) => handleScrollTo(e, '#portfolio')} className="hover:text-[#4884F5] transition-colors">Portfolio</a></li>
+              <li><a href="#projects" onClick={(e) => handleScrollTo(e, '#projects')} className="hover:text-[#4884F5] transition-colors">Projects</a></li>
+              <li><a href="#resume" onClick={(e) => handleScrollTo(e, '#resume')} className="hover:text-[#4884F5] transition-colors">Resume</a></li>
+            </ul>
+          </motion.div>
+
+          <motion.div variants={itemVariants}>
+            <h4 className="text-white font-bold text-xl mb-6 font-display">Direct Communication</h4>
+            <ul className="flex flex-col gap-3.5 text-slate-400 font-medium">
+              <li>
+                <a href="mailto:hsg090907.jsr@gmail.com" className="hover:text-[#4884F5] transition-colors">
+                  hsg090907.jsr@gmail.com
+                </a>
+              </li>
+              <li>
+                <a href="tel:+919942868093" className="hover:text-[#4884F5] transition-colors">
+                  +91 99428 68093
+                </a>
+              </li>
+              <li>
+                <a href="https://wa.me/919942868093" target="_blank" rel="noopener noreferrer" className="hover:text-emerald-400 transition-colors">
+                  Chat on WhatsApp
+                </a>
+              </li>
+              <li className="text-slate-500 pt-1 text-sm">
+                Operating remotely from India
+              </li>
+            </ul>
+          </motion.div>
 
         </div>
 
-        {/* Bottom Bar */}
-        <div className="flex flex-col md:flex-row justify-between items-center gap-6 pt-8 border-t border-white/5 text-[11px] font-mono text-white/30 tracking-widest uppercase">
-          <p>&copy; {new Date().getFullYear()} Himadri Shekhar. All rights reserved.</p>
-          <div className="flex gap-8">
-            <p className="flex items-center gap-1.5">designed with <Heart size={12} className="text-primary fill-primary/20" /> by <span className="text-white">Himadri</span> with <span className="text-primary">React</span></p>
-            <p>v2.4.0</p>
+        <motion.div variants={itemVariants} className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-slate-500 font-medium">© {new Date().getFullYear()} Himadri Shekhar. All rights reserved.</p>
+          <div className="flex gap-6 text-slate-500 font-medium">
+            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
+            <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
           </div>
-        </div>
-
-      </div>
+        </motion.div>
+      </motion.div>
     </footer>
   );
-};
-
-export default Footer;
+}

@@ -1,116 +1,97 @@
-import { useEffect, useRef } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Mail, Github, Instagram, MessageCircle, ArrowUpRight } from 'lucide-react';
+import React from 'react';
+import { Check, Phone, MessageCircle } from 'lucide-react';
+import { motion } from 'framer-motion';
 
-gsap.registerPlugin(ScrollTrigger);
+export default function Contact() {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1, 
+      transition: { staggerChildren: 0.2, delayChildren: 0.3 } 
+    }
+  };
 
-const Contact = () => {
-  const containerRef = useRef(null);
-  const textRef = useRef(null);
-  const socialRef = useRef([]);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-
-      gsap.fromTo(textRef.current,
-        { opacity: 0, y: 50 },
-        {
-          scrollTrigger: {
-            trigger: textRef.current,
-            start: "top 80%",
-            end: "bottom 60%",
-            scrub: 1
-          },
-          opacity: 1,
-          y: 0
-        }
-      );
-
-      socialRef.current.forEach((el, index) => {
-        gsap.fromTo(el,
-          { opacity: 0, scale: 0.95, y: 30 },
-          {
-            scrollTrigger: {
-              trigger: el,
-              start: "top 90%",
-              end: "bottom 80%",
-              scrub: 1
-            },
-            opacity: 1,
-            scale: 1,
-            y: 0,
-            delay: index * 0.1
-          }
-        );
-      });
-
-    }, containerRef);
-    return () => ctx.revert();
-  }, []);
-
-  const socials = [
-    { icon: <Github size={28} />, name: "GitHub", handle: "@celicular", href: "https://github.com/celicular" },
-    { icon: <Instagram size={28} />, name: "Instagram", handle: "@da.narcissistic_guy", href: "https://instagram.com/da.narcissistic_guy" },
-    { icon: <MessageCircle size={28} />, name: "WhatsApp", handle: "+91 99428 68093", href: "https://wa.me/919942868093" },
-    { icon: <Mail size={28} />, name: "Email", handle: "hsg090907.jsr@gmail.com", href: "mailto:hsg090907.jsr@gmail.com" }
-  ];
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 50 } }
+  };
 
   return (
-    <section ref={containerRef} id="contact" className="py-32 md:py-48 relative bg-surface border-t border-white/5 overflow-hidden">
-      
-      {/* Background glow for futuristic vibe */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] md:w-[60vw] md:h-[60vw] bg-primary/5 blur-[150px] rounded-full pointer-events-none z-0 hover:bg-primary/10 transition-colors duration-1000"></div>
+    <section id="contact" className="w-full bg-[#F9F9F9] pt-32 pb-24 px-6 relative overflow-hidden">
+      <motion.div 
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.5 }}
+        variants={containerVariants}
+        className="max-w-4xl mx-auto text-center relative z-10"
+      >
+        <motion.h2 
+          variants={itemVariants}
+          className="text-4xl md:text-5xl lg:text-6xl font-black text-[#111111] font-display mb-12 tracking-tighter"
+        >
+          Have An Awesome Project <br/> Idea? <span className="text-[#4884F5]">Let's Discuss</span>
+        </motion.h2>
 
-      <div className="container mx-auto px-6 max-w-5xl relative z-10 text-center">
-        
-        <div ref={textRef} className="mb-20">
-          <h2 className="text-5xl md:text-8xl font-mono font-black mb-6 tracking-tighter">
-            Let's <span className="text-primary text-glow">Connect</span>
-          </h2>
-          <p className="text-xl md:text-2xl text-text-muted font-light max-w-2xl mx-auto leading-relaxed">
-            Whether it's a new project, an opportunity, or just saying hi. <br className="hidden md:block"/> 
-            I'm always open to talking about futuristic tech and web dev.
-          </p>
-        </div>
+        <motion.div 
+          variants={{
+            hidden: { opacity: 0, scale: 0.8 },
+            visible: { opacity: 1, scale: 1, transition: { type: 'spring', stiffness: 50, damping: 15 } }
+          }}
+          className="relative max-w-2xl mx-auto bg-white rounded-full p-2 border border-slate-200 shadow-xl shadow-slate-200/50 flex items-center gap-2 mb-8"
+        >
+          <div className="w-12 h-12 bg-[#4884F5]/10 rounded-full flex items-center justify-center text-[#4884F5] shrink-0 ml-1">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          <div className="flex-1 text-slate-800 text-lg px-4 text-left font-medium overflow-hidden text-ellipsis">
+            hsg090907.jsr@gmail.com
+          </div>
+          <motion.a 
+            href="mailto:hsg090907.jsr@gmail.com"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="bg-[#4884F5] text-white px-8 py-4 rounded-full font-bold hover:bg-[#3570E4] transition-colors shadow-lg shadow-[#4884F5]/25 whitespace-nowrap uppercase tracking-widest text-sm inline-block"
+          >
+            Send email
+          </motion.a>
+        </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8 w-full mx-auto max-w-4xl text-left">
-          {socials.map((social, idx) => (
-             <a 
-              key={idx}
-              href={social.href}
-              target="_blank" 
-              rel="noopener noreferrer"
-              ref={el => socialRef.current[idx] = el}
-              className="group relative flex items-center justify-between p-6 md:p-8 rounded-[2rem] glass border border-white/5 overflow-hidden transition-all duration-500 hover:border-primary/40 hover:shadow-[0_0_40px_rgba(56,189,248,0.15)] hover:-translate-y-2 bg-background/50 hover:bg-background/80"
-            >
-              {/* Animated Background Highlight */}
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              
-              <div className="flex items-center gap-6 relative z-10">
-                <div className="w-16 h-16 rounded-full bg-white/5 border border-white/5 flex items-center justify-center text-text-muted group-hover:text-white group-hover:bg-primary/20 group-hover:border-primary/30 group-hover:shadow-[0_0_20px_rgba(56,189,248,0.2)] transition-all duration-500 transform-gpu">
-                  {social.icon}
-                </div>
-                <div className="flex flex-col items-start justify-center">
-                  <span className="text-2xl font-mono font-bold text-white group-hover:text-primary transition-colors duration-500 tracking-tight">
-                    {social.name}
-                  </span>
-                  <span className="text-sm md:text-base text-text-muted font-light transition-all duration-300">
-                    {social.handle}
-                  </span>
-                </div>
-              </div>
-              
-              <div className="relative z-10 w-12 h-12 rounded-full flex items-center justify-center opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 text-primary bg-primary/10">
-                <ArrowUpRight size={24} />
-              </div>
-            </a>
-          ))}
-        </div>
+        <motion.div 
+          variants={containerVariants}
+          className="flex flex-wrap justify-center items-center gap-5 sm:gap-8 md:gap-10 text-slate-600 font-bold text-sm mb-4"
+        >
+          <motion.div variants={itemVariants} className="flex items-center gap-2">
+            <Check size={18} className="text-[#4884F5]" strokeWidth={3} />
+            4.9/5 Average Ratings
+          </motion.div>
+          <motion.div variants={itemVariants} className="flex items-center gap-2">
+            <Check size={18} className="text-[#4884F5]" strokeWidth={3} />
+            Certified Product Engineer
+          </motion.div>
+          <motion.a 
+            href="tel:+919942868093"
+            variants={itemVariants}
+            className="flex items-center gap-2 hover:text-[#4884F5] transition-colors"
+          >
+            <Phone size={16} className="text-[#4884F5]" />
+            +91 99428 68093
+          </motion.a>
+          <motion.a 
+            href="https://wa.me/919942868093"
+            target="_blank"
+            rel="noopener noreferrer"
+            variants={itemVariants}
+            className="flex items-center gap-2 hover:text-emerald-600 transition-colors"
+          >
+            <MessageCircle size={16} className="text-emerald-500" />
+            WhatsApp
+          </motion.a>
+        </motion.div>
 
-      </div>
+        <motion.p variants={itemVariants} className="text-slate-400 text-sm font-medium">
+          Operating remotely from India
+        </motion.p>
+      </motion.div>
+
     </section>
   );
-};
-
-export default Contact;
+}

@@ -1,0 +1,46 @@
+[
+  {
+    "id": "proj-1",
+    "title": "CensorAI",
+    "type": "AI / NLP Moderation System",
+    "tech": ["Python", "NLP", "Machine Learning", "Video Processing", "AI Moderation"],
+    "image": "/project/main.png",
+    "desc": "An AI-powered social media moderation prototype that detects and flags hate speech or offensive content in uploaded videos. Using Natural Language Processing and machine learning models, the system analyzes spoken and textual content in real time to maintain a safer online environment.",
+    "link": "https://github.com/Celicular/TechDx404-NLP-censorAI",
+    "order": 0,
+    "hidden": false
+  },
+  {
+    "id": "proj-2",
+    "title": "LetsLearn",
+    "type": "AI Learning Platform",
+    "tech": ["Python", "RAG", "Local LLM", "Vector Databases", "Document Processing"],
+    "image": "/project/1.png",
+    "desc": "An intelligent offline educational application that transforms documents into interactive learning tools. Built with Retrieval-Augmented Generation (RAG), it allows users to upload study materials and query them using AI—running completely locally without requiring internet access.",
+    "link": "https://github.com/Celicular/lets-learn",
+    "order": 1,
+    "hidden": false
+  },
+  {
+    "id": "proj-3",
+    "title": "Clarity ERP",
+    "type": "Enterprise Software",
+    "tech": ["Full Stack", "Monolithic Architecture", "Workflow Automation", "Database Systems"],
+    "image": "/project/2.png",
+    "desc": "An enterprise-grade ERP command center designed to centralize and automate workforce management. The platform replaces fragmented SaaS tools by providing a unified ecosystem for business operations, task orchestration, and data-driven decision making.",
+    "link": "https://github.com/Celicular/Clarity-ERP",
+    "order": 2,
+    "hidden": false
+  },
+  {
+    "id": "proj-4",
+    "title": "Cap2Easy",
+    "type": "AI Video Tool",
+    "tech": ["Python", "OpenAI Whisper", "Speech Recognition", "GPU Acceleration", "Video Rendering"],
+    "image": "/project/3.png",
+    "desc": "A powerful video captioning system that automatically generates accurate subtitles using OpenAI Whisper speech recognition. It supports custom fonts, multilingual transcription, real-time preview, and GPU acceleration for fast high-quality caption rendering.",
+    "link": "https://github.com/Celicular/Celi-Cap2Easy",
+    "order": 3,
+    "hidden": false
+  }
+]

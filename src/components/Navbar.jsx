@@ -1,92 +1,94 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Menu, X } from 'lucide-react';
-// eslint-disable-next-line no-unused-vars
-import { motion, AnimatePresence } from 'framer-motion';
 
-const Navbar = () => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+export default function Navbar() {
+  const [isOpen, setIsOpen] = useState(false);
 
-  const handleNavClick = (e, href) => {
+  const toggleMenu = () => setIsOpen(!isOpen);
+  
+  const navLinks = [
+    { name: 'Home', href: '#home' },
+    { name: 'Services', href: '#services' },
+    { name: 'Resume', href: '#resume' },
+    { name: 'Portfolio', href: '#portfolio' },
+    { name: 'Projects', href: '#projects' },
+    { name: 'Testimonials', href: '#testimonials' },
+    { name: 'Contact Us', href: '#contact' },
+  ];
+
+  const handleScrollTo = (e, href) => {
     e.preventDefault();
-    const targetElement = document.querySelector(href);
+    setIsOpen(false);
+    const targetId = href.replace('#', '');
+    
+    if (targetId === 'home') {
+      if (window.lenis) {
+        window.lenis.scrollTo(0, { duration: 1.5 });
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      return;
+    }
+
+    const targetElement = document.getElementById(targetId);
     if (targetElement) {
-      targetElement.scrollIntoView({ behavior: 'smooth' });
+      if (window.lenis) {
+        window.lenis.scrollTo(targetElement, { offset: -40, duration: 1.5 });
+      } else {
+        targetElement.scrollIntoView({ behavior: 'smooth' });
+      }
     }
   };
 
-  const navLinks = [
-    { name: 'About', href: '#about' },
-    { name: 'Skills', href: '#skills' },
-    { name: 'Portfolio', href: '#portfolio' },
-    { name: 'Projects', href: '#projects' },
-    { name: 'Contact', href: '#contact' },
-  ];
-
   return (
     <>
-      {/* Desktop Floating Navbar (Top Left) */}
-      <nav className="fixed top-6 left-6 z-50 hidden md:block">
-        <motion.div 
-          className="flex items-center gap-6 glass px-6 py-3 rounded-full shadow-2xl"
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-        >
-          {/* Logo / Alias */}
-          <a href="#" className="text-xl font-bold tracking-tighter text-white mr-4">
-            C<span className="text-primary">€</span>li
-          </a>
+      <nav className="fixed top-6 left-1/2 -translate-x-1/2 w-[95%] md:w-[90%] max-w-5xl bg-[#0f0f0f] text-white/70 rounded-full px-6 md:px-10 py-3 md:py-4 flex items-center justify-between z-50 shadow-[0_20px_50px_rgba(0,0,0,0.2)] font-sans">
 
-          {navLinks.map((link) => (
-            <a 
-              key={link.name} 
-              href={link.href}
-              onClick={(e) => handleNavClick(e, link.href)}
-              className="text-sm font-medium text-text-muted hover:text-white transition-colors relative group"
-            >
-              {link.name}
-              <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-primary transition-all group-hover:w-full"></span>
-            </a>
-          ))}
-        </motion.div>
+        <div className="hidden md:flex gap-8 lg:gap-10 text-sm font-semibold tracking-wide">
+          <a href="#home" onClick={(e) => handleScrollTo(e, '#home')} className="text-[#4884F5] hover:text-[#4884F5] transition-colors">Home</a>
+          <a href="#services" onClick={(e) => handleScrollTo(e, '#services')} className="hover:text-white transition-colors">Services</a>
+          <a href="#resume" onClick={(e) => handleScrollTo(e, '#resume')} className="hover:text-white transition-colors">Resume</a>
+        </div>
+
+        <div 
+          onClick={(e) => handleScrollTo(e, '#home')}
+          className="flex items-center gap-3 cursor-pointer select-none"
+        >
+          <div className="w-8 h-8 rounded-full bg-[#4884F5] flex items-center justify-center text-white font-bold text-sm font-display">
+            H
+          </div>
+          <span className="font-bold text-lg tracking-wide text-white font-display">Himadri</span>
+        </div>
+
+        <div className="hidden md:flex gap-7 lg:gap-9 text-sm font-semibold tracking-wide">
+          <a href="#portfolio" onClick={(e) => handleScrollTo(e, '#portfolio')} className="hover:text-white transition-colors">Portfolio</a>
+          <a href="#projects" onClick={(e) => handleScrollTo(e, '#projects')} className="hover:text-white transition-colors">Projects</a>
+          <a href="#testimonials" onClick={(e) => handleScrollTo(e, '#testimonials')} className="hover:text-white transition-colors">Testimonials</a>
+          <a href="#contact" onClick={(e) => handleScrollTo(e, '#contact')} className="hover:text-white transition-colors">Contact</a>
+        </div>
+
+        <button 
+          className="md:hidden text-white hover:text-[#4884F5] transition-colors"
+          onClick={toggleMenu}
+        >
+          {isOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
       </nav>
 
-      {/* Mobile Toggle Button */}
-      <button 
-        className="fixed top-6 right-6 z-[60] md:hidden glass p-3 rounded-full text-white"
-        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-      >
-        {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-      </button>
-
-      {/* Mobile Nav */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.div 
-            initial={{ opacity: 0, x: '100%' }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: '100%' }}
-            transition={{ type: 'tween', duration: 0.3 }}
-            className="fixed inset-0 z-50 glass bg-background/95 flex flex-col items-center justify-center gap-8 md:hidden"
-          >
-            {navLinks.map((link) => (
-              <a 
-                key={link.name} 
-                href={link.href}
-                className="text-3xl font-black tracking-tighter text-white hover:text-primary transition-colors"
-                onClick={(e) => {
-                  setMobileMenuOpen(false);
-                  handleNavClick(e, link.href);
-                }}
-              >
-                {link.name}
-              </a>
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {isOpen && (
+        <div className="fixed top-24 left-1/2 -translate-x-1/2 w-[95%] bg-[#0f0f0f]/95 backdrop-blur-lg rounded-3xl p-6 z-40 shadow-2xl border border-white/10 md:hidden flex flex-col gap-6 items-center animate-in fade-in slide-in-from-top-4 duration-300">
+          {navLinks.map((link) => (
+            <a 
+              key={link.name}
+              href={link.href} 
+              onClick={(e) => handleScrollTo(e, link.href)}
+              className={`text-lg font-bold tracking-wide transition-colors ${link.name === 'Home' ? 'text-[#4884F5]' : 'text-white/70 hover:text-white'}`}
+            >
+              {link.name}
+            </a>
+          ))}
+        </div>
+      )}
     </>
   );
-};
-
-export default Navbar;
+}

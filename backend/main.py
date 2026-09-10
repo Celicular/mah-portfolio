@@ -11,7 +11,7 @@ from pydantic import BaseModel
 
 load_dotenv()
 
-ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "changeme123")
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "Celi@#$789")
 DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 app = FastAPI(title="Portfolio API", version="1.0.0")

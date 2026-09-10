@@ -1,235 +1,278 @@
-import { useEffect, useRef, useState } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ExternalLink, Github } from 'lucide-react';
-// eslint-disable-next-line no-unused-vars
-import { motion, AnimatePresence } from 'framer-motion';
-import { parseImageUrl } from '../utils/imageUtils';
-import api from '../utils/axios';
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { ArrowUpRight } from 'lucide-react';
+import { resolveImageUrl, processApiItems } from '../utils/imageHelper';
 
-gsap.registerPlugin(ScrollTrigger);
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.celi.me';
 
-const Projects = () => {
-  const containerRef = useRef(null);
-  const rightPanelsRef = useRef([]);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [projects, setProjects] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+function Github({ size = 18, className = "" }) {
+  return (
+    <svg 
+      width={size} 
+      height={size} 
+      viewBox="0 0 24 24" 
+      fill="none" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      strokeLinecap="round" 
+      strokeLinejoin="round" 
+      className={className}
+    >
+      <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+      <path d="M9 18c-4.51 2-5-2-7-2" />
+    </svg>
+  );
+}
 
-  // Fetch projects from API
+const initialProjects = [
+  {
+    id: "proj-1",
+    title: "CensorAI",
+    type: "AI / NLP Moderation System",
+    tech: ["Python", "NLP", "Machine Learning", "Video Processing", "AI Moderation"],
+    image: "/project/main.png",
+    desc: "An AI-powered social media moderation prototype that detects and flags hate speech or offensive content in uploaded videos. Using Natural Language Processing and machine learning models, the system analyzes spoken and textual content in real time to maintain a safer online environment.",
+    link: "https://github.com/Celicular/TechDx404-NLP-censorAI",
+    order: 0,
+    under_development: false
+  },
+  {
+    id: "proj-2",
+    title: "LetsLearn",
+    type: "AI Learning Platform",
+    tech: ["Python", "RAG", "Local LLM", "Vector Databases", "Document Processing"],
+    image: "/project/1.png",
+    desc: "An intelligent offline educational application that transforms documents into interactive learning tools. Built with Retrieval-Augmented Generation (RAG), it allows users to upload study materials and query them using AI—running completely locally without requiring internet access.",
+    link: "https://github.com/Celicular/lets-learn",
+    order: 1,
+    under_development: false
+  },
+  {
+    id: "proj-3",
+    title: "Clarity ERP",
+    type: "Enterprise Software",
+    tech: ["Full Stack", "Monolithic Architecture", "Workflow Automation", "Database Systems"],
+    image: "/project/2.png",
+    desc: "An enterprise-grade ERP command center designed to centralize and automate workforce management. The platform replaces fragmented SaaS tools by providing a unified ecosystem for business operations, task orchestration, and data-driven decision making.",
+    link: "https://github.com/Celicular/Clarity-ERP",
+    order: 2,
+    under_development: false
+  },
+  {
+    id: "proj-4",
+    title: "Cap2Easy",
+    type: "AI Video Tool",
+    tech: ["Python", "OpenAI Whisper", "Speech Recognition", "GPU Acceleration", "Video Rendering"],
+    image: "/project/3.png",
+    desc: "A powerful video captioning system that automatically generates accurate subtitles using OpenAI Whisper speech recognition. It supports custom fonts, multilingual transcription, real-time preview, and GPU acceleration for fast high-quality caption rendering.",
+    link: "https://github.com/Celicular/Celi-Cap2Easy",
+    order: 3,
+    under_development: false
+  }
+];
+
+export default function Projects() {
+  const [projects, setProjects] = useState(initialProjects);
+
   useEffect(() => {
-    api.get('/api/projects')
+    fetch(`${API_BASE_URL}/api/projects`)
       .then((res) => {
-        setProjects(res.data);
-        setLoading(false);
+        if (!res.ok) throw new Error('Failed to fetch projects');
+        return res.json();
+      })
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          const visible = processApiItems(data);
+          setProjects(visible);
+        }
       })
       .catch((err) => {
-        console.error(err);
-        setError('Could not load project data.');
-        setLoading(false);
+        console.warn('Using seeded projects data:', err.message);
       });
   }, []);
 
-  // GSAP scroll triggers — runs after data is ready
-  useEffect(() => {
-    if (projects.length === 0) return;
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.15 }
+    }
+  };
 
-    const ctx = gsap.context(() => {
-      rightPanelsRef.current.forEach((panel, index) => {
-        if (!panel) return;
-
-        ScrollTrigger.create({
-          trigger: panel,
-          start: 'top 80%',
-          end: 'bottom 20%',
-          onEnter: () => setActiveIndex(index),
-          onEnterBack: () => setActiveIndex(index),
-        });
-
-        const img = panel.querySelector('img');
-        if (img) {
-          gsap.fromTo(
-            img,
-            { scale: 1.2, filter: 'brightness(0.5) blur(5px)' },
-            {
-              scrollTrigger: {
-                trigger: panel,
-                start: 'top bottom',
-                end: 'center center',
-                scrub: 1,
-              },
-              scale: 1,
-              filter: 'brightness(1) blur(0px)',
-            }
-          );
-        }
-      });
-    }, containerRef);
-
-    return () => ctx.revert();
-  }, [projects]);
-
-  // ── Loading state ──────────────────────────────────────────────────────────
-  if (loading) {
-    return (
-      <section className="py-24 relative bg-surface border-t border-white/5 flex items-center justify-center min-h-[50vh]">
-        <div className="flex flex-col items-center gap-4">
-          <div className="flex gap-2">
-            {[0, 1, 2].map((i) => (
-              <div
-                key={i}
-                className="w-3 h-3 rounded-full bg-primary animate-bounce"
-                style={{ animationDelay: `${i * 0.15}s` }}
-              />
-            ))}
-          </div>
-          <p className="text-text-muted text-sm font-mono">Loading projects…</p>
-        </div>
-      </section>
-    );
-  }
-
-  // ── Error state ────────────────────────────────────────────────────────────
-  if (error) {
-    return (
-      <section className="py-24 relative bg-surface border-t border-white/5 flex items-center justify-center min-h-[50vh]">
-        <p className="text-red-400 font-mono text-sm">{error}</p>
-      </section>
-    );
-  }
-
-  const activeProject = projects[activeIndex] ?? {};
+  const cardVariants = {
+    hidden: { opacity: 0, y: 50, scale: 0.98 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: { type: 'spring', stiffness: 50, damping: 18 }
+    }
+  };
 
   return (
-    <section ref={containerRef} id="projects" className="py-24 relative bg-surface border-t border-white/5">
-      <div className="container mx-auto px-6 max-w-7xl">
-
-        <div className="mb-16 md:mb-24">
-          <h2 className="text-5xl md:text-6xl font-mono font-black mb-4 uppercase tracking-tighter inline-block px-8 py-4 bg-primary/10 text-glow text-white">
-            Personal <span className="text-primary">Projects</span>
-          </h2>
-          <p className="text-text-muted text-xl max-w-2xl mt-4 border-l-2 border-primary/50 pl-4">
-            Passionate side-hustles, experiments, and open-source contributions.
-          </p>
+    <section id="projects" className="w-full bg-[#F9F9F9] py-24 px-6 overflow-hidden relative">
+      {/* Decorative background vectors */}
+      <div className="absolute top-24 right-12 text-[#4884F5] opacity-15 hidden xl:block pointer-events-none">
+        <svg width="140" height="140" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <circle cx="50" cy="50" r="45" strokeDasharray="4 4" />
+          <circle cx="50" cy="50" r="25" />
+          <line x1="50" y1="5" x2="50" y2="95" />
+          <line x1="5" y1="50" x2="95" y2="50" />
+        </svg>
+      </div>
+      <div className="absolute bottom-20 left-10 text-slate-300 opacity-30 hidden lg:block pointer-events-none">
+        <div className="grid grid-cols-4 gap-3">
+          {[...Array(16)].map((_, i) => (
+            <div key={i} className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+          ))}
         </div>
+      </div>
 
-        <div className="flex flex-col md:flex-row gap-12 lg:gap-24 relative items-start">
-
-          {/* Left Sidebar — Sticky */}
-          <div className="w-full md:w-5/12 sticky top-32 z-20 flex flex-col pt-10">
-            <div className="glass p-8 rounded-3xl border border-white/10 shadow-2xl relative overflow-hidden transition-all duration-500">
-
-              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 rounded-full blur-[60px] -z-10" />
-
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeIndex}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  {/* Badge */}
-                  <div className="flex flex-wrap items-center gap-3 mb-6">
-                    <span className="px-4 py-1.5 text-xs font-bold uppercase tracking-widest bg-primary/20 text-primary rounded-full border border-primary/30 shadow-[0_0_15px_rgba(56,189,248,0.3)]">
-                      {activeProject.type}
-                    </span>
-                    {activeProject.under_development && (
-                      <span className="px-4 py-1.5 text-xs font-bold uppercase tracking-widest bg-amber-500/20 text-amber-500 rounded-full border border-amber-500/30 shadow-[0_0_15px_rgba(245,158,11,0.3)]">
-                        Under Development
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Title & Description */}
-                  <h3 className="text-4xl md:text-5xl font-black font-mono text-white mb-6 tracking-tight leading-none">
-                    {activeProject.title}
-                  </h3>
-                  <p className="text-text-muted text-lg leading-relaxed mb-8 min-h-[120px]">
-                    {activeProject.desc}
-                  </p>
-
-                  {/* Tech Stack */}
-                  <div className="mb-10">
-                    <h4 className="text-sm font-semibold text-white/50 uppercase tracking-widest mb-4">Tech Stack utilized</h4>
-                    <div className="flex flex-wrap items-start gap-2 min-h-[70px]">
-                      {(activeProject.tech ?? []).map((t) => (
-                        <span key={t} className="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-xs md:text-sm text-text-muted hover:text-white transition-colors cursor-default">
-                          {t}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Action Button */}
-                  <div className="flex flex-wrap gap-4">
-                    <a
-                      href={activeProject.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-primary text-white font-bold rounded-xl hover:bg-white hover:text-background transition-colors duration-300 shadow-lg shadow-primary/20"
-                    >
-                      <Github size={18} /> View on GitHub
-                    </a>
-                  </div>
-                </motion.div>
-              </AnimatePresence>
-            </div>
+      <div className="max-w-[1600px] mx-auto relative z-10">
+        {/* Section Header with Spring Entrance Animation */}
+        <motion.div 
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.15 }}
+          transition={{ type: 'spring', stiffness: 50, damping: 18 }}
+          className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-6"
+        >
+          <div>
+            <h2 className="text-5xl md:text-7xl font-black text-[#111111] tracking-tighter font-display uppercase drop-shadow-sm">
+              Notable <span className="text-[#4884F5]">Projects</span>
+            </h2>
+            <p className="text-slate-600 text-lg md:text-xl font-medium mt-4 max-w-2xl leading-relaxed">
+              Open-source software, intelligent AI tools, and enterprise platforms engineered for production.
+            </p>
           </div>
 
-          {/* Right Side — Scrolling Images */}
-          <div className="w-full md:w-7/12 flex flex-col gap-[30vh] pb-[40vh] pt-10">
-            {projects.map((project, idx) => (
-              <div
-                key={project.id ?? idx}
-                ref={(el) => (rightPanelsRef.current[idx] = el)}
-                className="w-full"
-              >
-                <div className="relative overflow-hidden aspect-video rounded-3xl shadow-2xl glass border border-white/10 group cursor-pointer block">
-                  <div className="absolute top-4 left-4 z-20 px-4 py-1 bg-background/80 backdrop-blur-md rounded-full border border-white/10 text-xs font-mono font-bold text-white uppercase opacity-0 group-hover:opacity-100 transition-opacity">
-                    0{idx + 1} — {project.title}
-                  </div>
-                  <img
-                    src={parseImageUrl(project.image)}
-                    alt={project.title}
-                    className="w-full h-full object-cover rounded-3xl"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-tr from-background/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-3xl" />
-                  {project.under_development && (
-                    <div className="absolute top-4 right-4 z-20 px-3 py-1.5 bg-amber-500/90 text-black text-[10px] md:text-xs font-bold uppercase tracking-widest rounded-full shadow-lg backdrop-blur-md">
-                      Under Development
-                    </div>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-
-        </div>
-
-        {/* Global CTA */}
-        <div className="mt-24 md:mt-32 flex flex-col items-center justify-center text-center">
-          <div className="w-24 h-[1px] bg-primary/30 mb-8" />
-          <h4 className="text-2xl md:text-3xl font-mono font-bold text-white mb-6">
-            Intrigued by my <span className="text-primary">Source Code</span>?
-          </h4>
           <a
-            href="https://github.com/celicular"
+            href="https://github.com/Celicular"
             target="_blank"
             rel="noopener noreferrer"
-            className="group relative inline-flex items-center gap-4 px-10 py-5 bg-white/5 border border-white/10 rounded-2xl hover:border-primary/50 transition-all duration-500 hover:shadow-[0_0_50px_rgba(56,189,248,0.15)] overflow-hidden"
+            className="group inline-flex items-center gap-3 bg-[#111111] text-white px-8 py-4 rounded-full font-bold uppercase tracking-wider text-sm hover:bg-[#4884F5] transition-all shadow-lg hover:shadow-[#4884F5]/25 shrink-0"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-            <Github className="text-primary group-hover:scale-110 transition-transform" size={24} />
-            <span className="text-white text-lg font-bold tracking-tight">Explore More Repositories</span>
-            <ExternalLink className="text-text-muted group-hover:text-white transition-colors" size={18} />
+            <Github size={18} />
+            <span>Explore All GitHub</span>
+            <ArrowUpRight size={18} className="group-hover:rotate-45 transition-transform duration-300" />
           </a>
-        </div>
+        </motion.div>
 
+        {/* Project Cards Grid */}
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.15 }}
+          variants={containerVariants}
+          className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-10"
+        >
+          {projects.map((project, idx) => (
+            <motion.div
+              key={project.id || idx}
+              variants={cardVariants}
+              whileHover={{ y: -8 }}
+              className="group bg-white rounded-[2.5rem] p-8 md:p-12 border border-slate-200/90 shadow-xl shadow-slate-200/50 flex flex-col justify-between transition-all duration-300 relative overflow-hidden"
+            >
+              {/* Subtle top accent line */}
+              <div className="absolute top-0 left-12 right-12 h-[3px] bg-gradient-to-r from-transparent via-[#4884F5]/40 to-transparent" />
+
+              <div>
+                {/* Header Meta Row */}
+                <div className="flex items-center justify-between gap-4 mb-6 pb-6 border-b border-slate-100">
+                  <div className="flex items-center gap-3">
+                    <span className="font-display font-black text-2xl text-[#4884F5] tracking-tight">
+                      {String(idx + 1).padStart(2, '0')}
+                    </span>
+                    <span className="text-xs uppercase font-bold tracking-widest text-slate-500">
+                      {project.type}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    {project.under_development ? (
+                      <span className="px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+                        In Development
+                      </span>
+                    ) : (
+                      <div className="flex items-center gap-2 bg-slate-100/80 px-3 py-1 rounded-full text-xs font-semibold text-slate-700">
+                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                        <span>Active</span>
+                      </div>
+                    )}
+
+                    {project.link && (
+                      <a
+                        href={project.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-10 h-10 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center hover:bg-[#4884F5] hover:text-white transition-colors"
+                        title="GitHub Repository"
+                      >
+                        <Github size={18} />
+                      </a>
+                    )}
+                  </div>
+                </div>
+
+                {/* Project Screenshot / Visual Preview (16:9 Aspect Ratio) */}
+                {project.image && (
+                  <div className="w-full aspect-video rounded-[1.8rem] overflow-hidden mb-6 bg-slate-100 border border-slate-100 relative group/img shadow-sm">
+                    <img
+                      src={resolveImageUrl(project.image)}
+                      alt={project.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                      onError={(e) => {
+                        e.currentTarget.parentElement.style.display = 'none';
+                      }}
+                    />
+                  </div>
+                )}
+
+                {/* Title & Description */}
+                <h3 className="text-3xl md:text-4xl font-black text-[#111111] font-display mb-4 tracking-tight group-hover:text-[#4884F5] transition-colors">
+                  {project.title}
+                </h3>
+                <p className="text-slate-600 text-base md:text-lg leading-relaxed mb-8">
+                  {project.desc}
+                </p>
+              </div>
+
+              {/* Tech Stack & Action Footer */}
+              <div>
+                {Array.isArray(project.tech) && project.tech.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    {project.tech.map((item, i) => (
+                      <span
+                        key={i}
+                        className="px-3.5 py-1.5 rounded-full bg-slate-100 border border-slate-200/70 text-slate-700 text-xs font-bold tracking-wide"
+                      >
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                {project.link && (
+                  <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+                    <a
+                      href={project.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-[#4884F5] group-hover:text-[#3570E4] transition-colors"
+                    >
+                      <span>Inspect Repository</span>
+                      <ArrowUpRight size={18} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                    </a>
+                    <span className="text-xs font-bold uppercase tracking-widest text-slate-400">
+                      GitHub Source
+                    </span>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
       </div>
     </section>
   );
-};
-
-export default Projects;
+}

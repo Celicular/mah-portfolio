@@ -1,118 +1,164 @@
-import { useEffect, useRef } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import FloatingLines from './FloatingLines';
+import React from 'react';
+import { ArrowUpRight, Star, Sparkles, BadgeCheck } from 'lucide-react';
+import { motion } from 'framer-motion';
 
-gsap.registerPlugin(ScrollTrigger);
+export default function Hero() {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1, 
+      transition: { staggerChildren: 0.1, delayChildren: 0.2 } 
+    }
+  };
 
-const Hero = () => {
-  const containerRef = useRef(null);
-  const aliasRef = useRef(null);
-  const textRef = useRef(null);
-  const descRef = useRef(null);
-  const heroContentRef = useRef(null);
+  const itemVariants = {
+    hidden: { y: 50, opacity: 0 },
+    visible: { y: 0, opacity: 1, transition: { type: 'spring', stiffness: 100, damping: 12 } }
+  };
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ defaults: { opacity: 0, ease: "power3.out" } });
+  const textRevealVariants = {
+    hidden: { y: '100%', rotate: 5, opacity: 0 },
+    visible: { y: 0, rotate: 0, opacity: 1, transition: { type: 'spring', stiffness: 80, damping: 15 } }
+  };
 
-      // Entry animations
-      tl.fromTo(aliasRef.current,
-        { scale: 0.8, y: 50 },
-        { scale: 1, opacity: 1, y: 0, duration: 1.5, ease: "expo.out" }
-      )
-      .fromTo(textRef.current,
-        { scale: 0.9, y: 20 },
-        { scale: 1, opacity: 1, y: 0, duration: 1.2, ease: "expo.out" },
-        "-=1.2"
-      )
-      .fromTo(descRef.current,
-        { y: 20 },
-        { y: 0, opacity: 1, duration: 0.8 },
-        "-=1"
-      );
-
-      // Scroll morph effect
-      gsap.to(heroContentRef.current, 
-        {
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: "top top",
-            end: "bottom top",
-            scrub: true,
-          },
-          y: 200, 
-          scale: 0.9,
-          opacity: 0, 
-          filter: "blur(20px)",
-          skewX: -5,
-        }
-      );
-      
-    }, containerRef); // Scoper can be the ref itself
-
-    return () => ctx.revert();
-  }, []);
+  const shapeVariants = {
+    hidden: { scale: 0.2, borderRadius: "100%", opacity: 0, rotate: -45 },
+    visible: { scale: 1, borderRadius: "50%", opacity: 1, rotate: 0, transition: { type: "spring", stiffness: 60, damping: 20, duration: 1.5 } }
+  };
 
   return (
-    <section 
-      ref={containerRef} 
-      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20"
+    <motion.section 
+      initial="hidden" 
+      animate="visible" 
+      variants={containerVariants}
+      id="home" 
+      className="pt-32 pb-0 px-6 min-h-screen flex flex-col items-center relative overflow-hidden w-full font-sans"
     >
-      <div className="absolute inset-0 z-0 pointer-events-auto">
-        <FloatingLines 
-          enabledWaves={["bottom","middle"]}
-          lineCount={6}
-          lineDistance={58.5}
-          bendRadius={26}
-          bendStrength={15}
-          interactive={true}
-          parallax={true}
-          linesGradient={['#38bdf8', '#ffffff', '#38bdf8']}
-        />
-      </div>
 
+      <motion.div variants={itemVariants} className="relative mb-6 z-10 mt-2">
+        <motion.div 
+          whileHover={{ scale: 1.05 }}
+          className="inline-flex items-center gap-2 px-6 py-2 rounded-full border border-slate-200 bg-white text-slate-800 font-bold text-lg shadow-sm transition-transform cursor-pointer"
+        >
+          <span>Hello!</span>
+        </motion.div>
+        <motion.div
+          animate={{ rotate: [0, 15, -15, 0] }}
+          transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+          className="absolute -top-4 -right-6 text-[#4884F5]"
+        >
+          <Sparkles size={32} />
+        </motion.div>
+      </motion.div>
 
-      <div className="container mx-auto px-6 relative z-10 flex flex-col items-center justify-start text-center h-full pt-[15vh] md:pt-[10vh]">
+      <h1 className="text-[4rem] md:text-[6rem] lg:text-[7.5rem] font-black text-center tracking-tighter text-[#111111] mb-4 z-10 leading-[0.9] font-display uppercase drop-shadow-sm flex flex-col items-center">
+        <div className="overflow-hidden">
+          <motion.div variants={textRevealVariants} className="origin-bottom-left">
+            I'm <span className="text-[#4884F5]">Himadri,</span>
+          </motion.div>
+        </div>
+        <div className="overflow-hidden">
+          <motion.div variants={textRevealVariants} className="origin-bottom-left text-[#111111]">
+            Product Engineer
+          </motion.div>
+        </div>
+      </h1>
 
-        <div ref={heroContentRef} className="flex flex-col items-center justify-start z-20 w-full mt-[-30px] md:mt-[-50px]">
-          <div className="overflow-visible perspective-[1000px] w-full max-w-5xl">
-            <h1 
-              ref={aliasRef} 
-              className="text-[18vw] md:text-[20vw] font-mono font-black tracking-tighter leading-none relative z-10 flex items-center justify-center opacity-0"
-              style={{ paddingBottom: '20px' }}
-            >
-              <span className="text-slate-200">C</span>
-              <span className="text-sky-400">€</span>
-              <span className="text-slate-200">LI</span>
-            </h1>
-          </div>
+      <div className="relative w-full max-w-[1600px] mx-auto flex-1 flex items-center justify-between mt-0 md:mt-4 pb-20">
 
-          <div className="overflow-visible mb-6 perspective-[1000px] mt-2 md:mt-4">
-            <h2 
-              ref={textRef} 
-              className="text-4xl md:text-6xl font-mono font-bold tracking-tight leading-none text-white drop-shadow-lg relative z-20 opacity-0"
-            >
-              HIMADRI SHEKHAR
-            </h2>
-          </div>
-          
-          <div ref={descRef} className="flex flex-col items-center gap-4 mt-4 relative z-30 opacity-0">
-            <p className="max-w-xl text-xl md:text-2xl text-text-muted font-light px-6 py-3 glass rounded-full border border-white/10 shadow-xl">
-              Friendly neighborhood developer
+        <motion.div variants={itemVariants} className="hidden lg:flex flex-col gap-12 pl-8 w-80 z-20 mt-[-25vh]">
+          <motion.div whileHover={{ x: 10 }}>
+            <div className="text-8xl font-serif text-[#111111] mb-2 leading-none absolute -ml-6 -mt-8 opacity-10">“</div>
+            <p className="text-lg text-slate-800 leading-snug font-bold border-l-4 border-[#4884F5] pl-4">
+              Himadri's exceptional engineering and solutions ensured our product's success.<br/>Highly recommended!
             </p>
-          </div>
+          </motion.div>
+          <motion.div whileHover={{ scale: 1.05 }} className="mt-4 origin-left">
+            <div className="flex items-center gap-3">
+              <div className="font-black text-6xl text-[#111111] font-display tracking-tight">95+</div>
+              <BadgeCheck className="text-[#4884F5] fill-[#4884F5]/10" size={36} strokeWidth={2.5} />
+            </div>
+            <div className="text-xl text-slate-600 font-bold mt-2 uppercase tracking-widest">Clients Served</div>
+          </motion.div>
+        </motion.div>
+
+        <div className="relative flex-1 h-full flex justify-center items-center">
+
+          <motion.div 
+            variants={shapeVariants}
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[40%] w-[450px] h-[450px] md:w-[650px] md:h-[650px] lg:w-[850px] lg:h-[850px] bg-[#4884F5] z-0"
+            style={{ borderRadius: "50%" }}
+          />
+
+          <motion.img 
+            variants={{
+              hidden: { y: 200, opacity: 0 },
+              visible: { 
+                y: 0, 
+                opacity: 1, 
+                transition: { 
+                  y: { type: 'spring', stiffness: 50, damping: 20, delay: 0.1 },
+                  opacity: { duration: 0.25, ease: 'easeOut' }
+                } 
+              }
+            }}
+            src="/assets/cutout.png" 
+            alt="Himadri Shekhar - Product Engineer and Full Stack Architect" 
+            fetchPriority="high"
+            decoding="async"
+            className="relative z-10 h-[90vh] md:h-[110vh] max-h-[1200px] object-contain object-bottom drop-shadow-[0_30px_50px_rgba(0,0,0,0.35)] mt-[-40vh]"
+          />
+
+          <motion.div 
+            variants={{
+              hidden: { opacity: 0 },
+              visible: { opacity: 1, transition: { delay: 1 } }
+            }}
+            className="absolute bottom-[12vh] md:bottom-[28vh] left-1/2 -translate-x-[160px] md:-translate-x-[180px] z-40"
+          >
+            <motion.svg 
+              width="70" height="80" viewBox="0 0 70 80" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-[#111111] drop-shadow-md"
+            >
+              <motion.path initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.5, delay: 0.8, ease: "easeOut" }} d="M15 5 C 5 35, 10 65, 60 70" stroke="currentColor" strokeWidth="4" strokeLinecap="round" fill="transparent" />
+              <motion.path initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.5, delay: 1.2, ease: "easeOut" }} d="M45 55 L 62 70 L 45 85" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" fill="transparent" />
+            </motion.svg>
+          </motion.div>
+
+          <motion.a 
+            href="mailto:hsg090907.jsr@gmail.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            variants={itemVariants}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="absolute bottom-[8vh] md:bottom-[25vh] left-1/2 -translate-x-1/2 z-30 flex items-center bg-white/60 backdrop-blur-md p-2 rounded-full border border-white/80 shadow-2xl w-max cursor-pointer"
+          >
+            <div className="bg-[#4884F5] text-white px-10 py-4 rounded-full font-bold flex items-center gap-3 hover:bg-[#3570E4] transition-colors shadow-lg text-lg uppercase tracking-wide font-display group">
+              Hire Me <ArrowUpRight size={24} strokeWidth={2.5} className="group-hover:rotate-45 transition-transform duration-300" />
+            </div>
+          </motion.a>
         </div>
 
-      </div>
+        <motion.div variants={itemVariants} className="hidden lg:flex flex-col gap-12 pr-8 w-80 text-right z-20 items-end mt-[-25vh]">
+          <motion.div whileHover={{ x: -10 }}>
+            <div className="flex gap-2 justify-end text-[#4884F5] mb-4">
+              {[1,2,3,4,5].map((i, index) => (
+                <motion.div 
+                  key={i}
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.8 + index * 0.1 }}
+                >
+                  <Star size={28} fill="currentColor" />
+                </motion.div>
+              ))}
+            </div>
+            <div className="font-black text-6xl text-[#111111] font-display tracking-tight mt-6">5+ Years</div>
+            <div className="text-xl text-slate-600 font-bold mt-2 uppercase tracking-[0.2em] border-b-2 border-slate-900 pb-2 inline-block">Experience</div>
+          </motion.div>
+        </motion.div>
 
-      {/* Scroll indicator */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-60 cursor-default z-20">
-        <span className="text-xs uppercase tracking-widest text-primary font-mono font-bold">Scroll</span>
-        <div className="w-[2px] h-16 bg-gradient-to-b from-primary to-transparent animate-pulse rounded-full"></div>
       </div>
-    </section>
+    </motion.section>
   );
-};
-
-export default Hero;
+}
